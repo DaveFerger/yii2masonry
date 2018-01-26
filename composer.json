@@ -20,10 +20,10 @@
 	"require": {
 		"php": ">=5.4.0",
 		"yiisoft/yii2": "*",
-		"bower-asset/masonry" : "3.*",
+		"bower-asset/masonry" : "*",
 		"bower-asset/imagesloaded" : "*",
-		"bower-asset/eventEmitter" : "4.*",
-		"bower-asset/outlayer" : "1.*"
+		"bower-asset/eventEmitter" : "*",
+		"bower-asset/outlayer" : "*"
 	},
 	"require-dev": {
 		"codeception/codeception": "*"
