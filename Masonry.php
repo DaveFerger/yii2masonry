@@ -16,7 +16,7 @@ use yii\base\Widget as Widget;
  *
  */
 
-class yii2masonry extends Widget
+class Masonry extends Widget
 {
 
     /**
@@ -24,7 +24,7 @@ class yii2masonry extends Widget
     * The values will be HTML-encoded using [[Html::encode()]].
     * If a value is null, the corresponding attribute will not be rendered.
     */
-    public $options = array();
+    public $options = [];
 
 
     /**
@@ -35,6 +35,7 @@ class yii2masonry extends Widget
         'columnWidth'  => 200
     );
 
+    private $_masonryOptionsVar;
 
     /**
      * Initializes the widget.
@@ -49,7 +50,7 @@ class yii2masonry extends Widget
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
-        
+
         parent::init();
     }
 
@@ -59,6 +60,10 @@ class yii2masonry extends Widget
     public function run()
     {        
         $masonry = ob_get_clean();
+
+        $this->_masonryOptionsVar = 'masonry_' . hash('crc32', $this->options['id']);
+        $this->options['data-masonry-options'] = $this->_masonryOptionsVar;
+
         echo Html::beginTag('div', $this->options); //opens the container
             echo $masonry;
         echo Html::endTag('div'); //closes the container, opened on init
@@ -80,11 +85,14 @@ class yii2masonry extends Widget
         $js = array();
         
         $options = Json::encode($this->clientOptions);
-        $js[] = "var mscontainer$id = $('#$id');";
-        $js[] = "var msnry$id = mscontainer$id.masonry($options);";
-        $js[] = "msnry$id.imagesLoaded(function(){  msnry$id.masonry(); });";
 
-        $view->registerJs(implode("\n", $js),View::POS_READY);
+        $view->registerJs("window.{$this->_masonryOptionsVar} = {$options};", View::POS_HEAD);
+
+ //       $js[] = "var mscontainer$id = $('#$id');";
+//        $js[] = "var msnry$id = mscontainer$id.masonry($options);";
+//        $js[] = "msnry$id.imagesLoaded(function(){  msnry$id.masonry(); });";
+
+        $view->registerJs("$('#$id').masonry(window[$('#$id').data('masonry-options')]);",View::POS_READY);
     }
 
 }
